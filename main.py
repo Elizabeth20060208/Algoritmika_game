@@ -20,17 +20,23 @@ bg = pygame.transform.scale(pygame.image.load("images/bg.png"), (1280, 720)) #З
 player_img = pygame.transform.scale(pygame.image.load("images/player.png"), (60, 65)) #Загрузка игрока с компьютера
 wall = pygame.transform.scale(pygame.image.load("images/wall.png"), (120, 100)) #Загрузка стенок с компьютера(дерева)
 enemy_img = pygame.transform.scale(pygame.image.load("images/enemy.png"), (60, 65)) #Загрузка врага с компьютера
+mana = pygame.transform.scale(pygame.image.load("images/mana.png"), (40, 45))#Загрузка маны с компьютера
 
-all_sprites = pygame.sprite.Group() #Создание группы объектов
+all_sprites = pygame.sprite.Group() #Создание группы всех объектов
 walls = pygame.sprite.Group() #Создание группы стенок
 enemies = pygame.sprite.Group() #Создание группы врагов
+items = pygame.sprite.Group() #Создание группы вещей(маны)
 
-player = Object(player_img, start_x, start_y, 4) #Создание объекта "игрок"
-all_sprites.add(player) #Добавление объекта "игрок" в группу всех спрайтов
+#Создание объекта "игрок"
 
-enemy1 = Object(enemy_img, 800, 150, 4) #Создание объекта "враг1"
-all_sprites.add(enemy1) #Добавление объекта "враг1" в группу всех спрайтов
-enemies.add(enemy1) #Добавление объекта "враг1" в группу "враги"
+player = Object(player_img, start_x, start_y, 4)
+all_sprites.add(player)
+
+#Создание объектов "враги"
+
+enemy1 = Object(enemy_img, 800, 120, 4)
+all_sprites.add(enemy1)
+enemies.add(enemy1)
 enemy2 = Object(enemy_img, 500, 470, 4)
 all_sprites.add(enemy2)
 enemies.add(enemy2)
@@ -38,9 +44,26 @@ enemy3 = Object(enemy_img, 250, 300, 4)
 all_sprites.add(enemy3)
 enemies.add(enemy3)
 
+#Создание объектов "вещи"(мана)
+
+mana1 = Object(mana, 540, 300, 0)
+all_sprites.add(mana1)
+items.add(mana1)
+mana2 = Object(mana, 40, 650, 0)
+all_sprites.add(mana2)
+items.add(mana2)
+mana3 = Object(mana, 1150, 650, 0)
+all_sprites.add(mana3)
+items.add(mana3)
+mana4 = Object(mana, 770, 205, 0)
+all_sprites.add(mana4)
+items.add(mana4)
 
 #Стенки
 
+wall59 = Object(wall, -90, 00, 0) #59
+all_sprites.add(wall59)
+walls.add(wall59)
 wall1 = Object(wall, 0, 0, 0)
 all_sprites.add(wall1)
 walls.add(wall1)
@@ -125,7 +148,7 @@ walls.add(wall24)
 wall25 = Object(wall, 980, 0, 0)
 all_sprites.add(wall25)
 walls.add(wall25)
-wall26 = Object(wall, 1160, 0, 0)
+wall26 = Object(wall, 1190, 0, 0)
 all_sprites.add(wall26)
 walls.add(wall26)
 wall27 = Object(wall, 1250, 0, 0)
@@ -227,8 +250,34 @@ wall57 = Object(wall, 1280, 720, 0)
 all_sprites.add(wall57)
 walls.add(wall57)
 
+wall60 = Object(wall, -115, 90, 0)
+all_sprites.add(wall60)
+walls.add(wall60)
+wall61 = Object(wall, -115, 180, 0)
+all_sprites.add(wall61)
+walls.add(wall61)
+wall62 = Object(wall, -115, 270, 0)
+all_sprites.add(wall62)
+walls.add(wall62)
+wall63 = Object(wall, -115, 360, 0)
+all_sprites.add(wall63)
+walls.add(wall63)
+wall64 = Object(wall, -115, 450, 0)
+all_sprites.add(wall64)
+walls.add(wall64)
+wall65 = Object(wall, -115, 540, 0)
+all_sprites.add(wall65)
+walls.add(wall65)
+wall66 = Object(wall, -115, 630, 0)
+all_sprites.add(wall66)
+walls.add(wall66)
+wall67 = Object(wall, -115, 720, 0)
+all_sprites.add(wall67)
+walls.add(wall67)
+
 #Стенки
 
+points = 0 #Количество очков(собранных предметов)
 
 run = True
 while run:
@@ -253,12 +302,15 @@ while run:
         if keys[pygame.K_ESCAPE]:
             run = False
 
-    if len(pygame.sprite.spritecollide(player, walls, False)) > 0: #Столкновение игрока со стенкой
+    if len(pygame.sprite.spritecollide(player, walls, False)) > 0 : #Столкновение игрока со стенкой
         player.rect.x = start_x
         player.rect.y = start_y
     if len(pygame.sprite.spritecollide(player, enemies, False)) > 0 : #Столкновение игрока с врагом
         player.rect.x = start_x
         player.rect.y = start_y
+    if len(pygame.sprite.spritecollide(player, items, True)) > 0 : #Столкновение игрока с вещью(маной)
+        points += 1
+        print(points)
 
     #Движение врагов
 
@@ -270,10 +322,19 @@ while run:
 
     if len(pygame.sprite.spritecollide(enemy1, walls, False)) > 0 :
         enemy1.speed *= -1
+        if enemy1.speed > 0:
+            enemy1.image = enemy_img
+        else: 
+            enemy1.image = pygame.transform.flip(enemy_img, True, False)
     if len(pygame.sprite.spritecollide(enemy2, walls, False)) > 0 :
         enemy2.speed *= -1
+        if enemy2.speed > 0:
+            enemy2.image = enemy_img
+        else: 
+            enemy2.image = pygame.transform.flip(enemy_img, True, False)
     if len(pygame.sprite.spritecollide(enemy3, walls, False)) > 0 :
         enemy3.speed *= -1
+
 
     all_sprites.draw(window) #Отображение спрайтов в окне
     all_sprites.update() #Обновление спрайтов
