@@ -1,6 +1,13 @@
 import pygame
+import pygame.mixer
+pygame.init()
 window = pygame.display.set_mode((1280, 720), pygame.FULLSCREEN) #Размер игрового окна
 pygame.display.set_caption("Алгоритмика") #Название программы
+
+#Загрузка фоновой мелодии с компьютера
+pygame.mixer.music.load("sounds/bg.mp3") #Загрузка
+pygame.mixer.music.play() #Запуск
+pygame.mixer.music.set_volume(0.5) #Громкость
 
 class Object(pygame.sprite.Sprite):       #Класс объектов игры
     def __init__(self, img, x, y, speed):
@@ -17,7 +24,7 @@ start_y = 110
 
 #Импорт изображений
 bg = pygame.transform.scale(pygame.image.load("images/bg.png"), (1280, 720)) #Загрузка фона с компьютера
-player_img = pygame.transform.scale(pygame.image.load("images/player.png"), (60, 65)) #Загрузка игрока с компьютера
+player_img = pygame.transform.scale(pygame.image.load("images/player.png"), (50, 55)) #Загрузка игрока с компьютера
 wall = pygame.transform.scale(pygame.image.load("images/wall.png"), (120, 100)) #Загрузка стенок с компьютера(дерева)
 enemy_img = pygame.transform.scale(pygame.image.load("images/enemy.png"), (60, 65)) #Загрузка врага с компьютера
 mana = pygame.transform.scale(pygame.image.load("images/mana.png"), (40, 45))#Загрузка маны с компьютера
@@ -29,7 +36,7 @@ items = pygame.sprite.Group() #Создание группы вещей(маны
 
 #Создание объекта "игрок"
 
-player = Object(player_img, start_x, start_y, 4)
+player = Object(player_img, start_x, start_y, 8)
 all_sprites.add(player)
 
 #Создание объектов "враги"
@@ -279,6 +286,10 @@ walls.add(wall67)
 
 points = 0 #Количество очков(собранных предметов)
 
+#Текст игры
+points_font = pygame.font.Font(None, 40) #Шрифт и размер
+points_text = points_font.render("Мана: 0", True, pygame.Color("White")) #Текст, сглаживание и цвет
+
 run = True
 while run:
     window.blit(bg, (0, 0)) #Наложение фона
@@ -310,7 +321,7 @@ while run:
         player.rect.y = start_y
     if len(pygame.sprite.spritecollide(player, items, True)) > 0 : #Столкновение игрока с вещью(маной)
         points += 1
-        print(points)
+        points_text = points_font.render("Мана: " + str(points), True, pygame.Color("White"))
 
     #Движение врагов
 
@@ -338,4 +349,5 @@ while run:
 
     all_sprites.draw(window) #Отображение спрайтов в окне
     all_sprites.update() #Обновление спрайтов
+    window.blit(points_text, (30, 30)) #Отображение текста
     pygame.display.update() #Обновление экрана
