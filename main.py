@@ -1,6 +1,9 @@
 import pygame
 import pygame.mixer
+from tkinter import * #Модуль всплывающих окон
+from tkinter import messagebox as mb #Сокращение команды
 pygame.init()
+Tk().wm_withdraw() #Скрытие всплывающего окна
 window = pygame.display.set_mode((1280, 720), pygame.FULLSCREEN) #Размер игрового окна
 pygame.display.set_caption("Алгоритмика") #Название программы
 
@@ -313,6 +316,10 @@ while run:
         if keys[pygame.K_ESCAPE]:
             run = False
 
+    if points == 4:
+        mb.showinfo("Конец игры!", "Молодец! Ты прошёл игру")
+        run = False
+
     if len(pygame.sprite.spritecollide(player, walls, False)) > 0 : #Столкновение игрока со стенкой
         player.rect.x = start_x
         player.rect.y = start_y
@@ -322,6 +329,7 @@ while run:
     if len(pygame.sprite.spritecollide(player, items, True)) > 0 : #Столкновение игрока с вещью(маной)
         points += 1
         points_text = points_font.render("Мана: " + str(points), True, pygame.Color("White"))
+
 
     #Движение врагов
 
